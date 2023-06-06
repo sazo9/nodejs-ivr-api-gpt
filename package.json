@@ -1,0 +1,19 @@
+{
+  "name": "ivr_auxiliar",
+  "version": "1.0.0",
+  "description": "API para auxiliar o Nice CX One na interaçao com GPT",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andre Sazonov",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "azure-storage": "^2.10.7",
+    "dotenv": "^16.1.3",
+    "express": "^4.18.2",
+    "ffmpeg-static": "^5.1.0",
+    "wavefile": "^11.0.0"
+  }
+}
