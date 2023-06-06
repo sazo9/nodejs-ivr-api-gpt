@@ -8,9 +8,11 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/teste',  async (req, res) => {
 
+    console.log('subiu');
     main(req, res);
 
 });
 
+module.exports = app;
 
 
