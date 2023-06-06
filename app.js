@@ -1,78 +1,41 @@
-"use strict";
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-const express = require('express');
-const fs = require('fs');
-const { base64ToAudio, converteMp3ToWav, getAccessToken, downFileNice, upFileNice, createSession, deleteSession, question } = require('./funcoes2');
-const {main} = require('./Funcoes3')
-const app = express();
-const port = 5000;
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(logger('dev'));
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/teste',  async (req, res) => {
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
-    main(req, res);
-
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
 });
 
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-
-app.get('/gpt',  async (req, res) => {
-
-    //const accessToken = await getAccessToken().then((accessToken) => {
-    //    console.log('Token de acesso:', accessToken);
-    //}).catch((error) => {
-    //    console.error(error);
-    //});
-
-    const accessToken = await getAccessToken();
-   
-
-    const { fileName, bufferNice } = await downFileNice(req, res, accessToken);
-    //console.log(fileName);
-    //console.log(bufferNice);
-
-    const session = await createSession(req, res);
-
-    const data = {fileName:fileName, bufferNice:bufferNice, token:accessToken, session:session};
-    const bufferGPT = await question(req, res, data);
-
-    await base64ToAudio(bufferGPT, `resposta_${data.fileName}.mp3`);
-    await converteMp3ToWav(`resposta_${data.fileName}.mp3`, `resposta_${data.fileName}`);
-
-    await upFileNice(req, res, data);
-
-    //deleteSession(req, res, data);
-    
-    //
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
-app.get('/createSession', async (req, res) => {
-
-    createSession(req, res);
-    
-});
-
-app.get('/deleteSession/:session', (req, res) => {
-   
-    deleteSession(req, res);
-
-});
-
-app.get('/question', async (req, res) => {
-    
-    question(req, res);
-  
-});
-
-
-app.get('/downloadAudio', async (req, res) => {
-    
-    downloadAudio(req, res);
-
-});
-
-app.listen(port, () => {
-    console.log(`Web Service rodando em http://localhost:${port}`);
-});
-
+module.exports = app;
