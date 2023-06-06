@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const port = 5000;
 var app = express();
 
 // view engine setup
@@ -38,4 +39,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+app.listen(port, () => {
+  console.log(`Web Service rodando em http://localhost:${port}`);
+});
 module.exports = app;
