@@ -4,7 +4,7 @@
   "main": "app.js",
   "private": true,
   "scripts": {
-    "start": "yarn app.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
